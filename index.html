@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SEGER Learning Kit</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
 <style>
 :root{--ink:#1d2b3a;--mut:#5b6b7b;--bg:#f6f8fa;--line:#d9e0e7;--g:#1f7a6d;--gl:#e1f2ef;--e:#c9741a;--el:#fbeedc;--r:#5b4bb5;--rl:#e9e6f8;--pri:#17324d}
 *{box-sizing:border-box}
@@ -77,6 +80,22 @@ table{table-layout:fixed}
 .ban .gr{width:110px;height:82px;flex:none;z-index:1}
 @media(max-width:560px){.ban .gr{display:none}}
 tr{break-inside:avoid}
+.rm{margin:8px 0;display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:.85rem}
+.pv{background:#fff;border:1px dashed var(--g);border-radius:6px;padding:8px;margin-top:6px;white-space:pre-wrap}
+.pv:before{content:'Pratinjau rumus';display:block;font-size:.72rem;color:var(--g);font-weight:700}
+.box{background:repeating-linear-gradient(#fff 0 31px,#e3e8ed 31px 32px);min-height:128px}
+.cat{min-height:224px}
+.it{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start;margin:14px 0}
+.it .n{width:34px;height:34px;border-radius:50%;background:#fff;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;font:700 1rem Georgia,serif}
+.g .it .n{color:var(--g)}.r .it .n{color:var(--r)}
+.sq{font-weight:600;margin-bottom:2px}
+.scale{margin-top:8px}
+th{background:rgba(201,116,26,.15)}
+.qrs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:10px 0}
+.qr{display:block;max-width:none;margin:0;background:#fff;border:1px solid #9aa7b4;border-radius:10px;padding:12px;text-align:center}
+.qr img{display:block;margin:0 auto 8px}
+.qr b,.qr span,.qr small{display:block}
+.qr small{margin-top:4px;color:var(--mut)}
 @media print{.st.e{break-inside:auto}
  header,.noprint,#editor{display:none!important}
  body{background:#fff}main{max-width:none;padding:0}
@@ -114,7 +133,7 @@ tr{break-inside:avoid}
 
  <div class="card q">
   <h2>Soal pemantik</h2>
-  <p class="hint">Semua soal dikerjakan bersama dalam satu alur Generate, Explore, Revise. Tulis rumus dengan teks biasa, misalnya x^2 - 5x + 6 = 0.</p>
+  <p class="hint">Semua soal dikerjakan bersama dalam satu alur Generate, Explore, Revise. Apit rumus dengan tanda $, misalnya $x^2 - 5x + 6 = 0$, maka di lembar kerja tampil sebagai rumus yang rapi. Pangkat ditulis x^2, pecahan \frac{a}{b}, akar \sqrt{x}. Klik dulu kolom yang ingin diisi, lalu pakai tombol di bawah.</p><div class="rm" id="rm"></div>
   <div id="soalList"></div>
   <div class="acts"><button onclick="tambahSoal()">+ Tambah soal</button></div>
  </div>
@@ -175,11 +194,22 @@ function renderSoal(){
   '<button class="s" onclick="pindah('+i+',-1)" aria-label="Naik">&uarr;</button> '+
   '<button class="s" onclick="pindah('+i+',1)" aria-label="Turun">&darr;</button> '+
   '<button class="s d" onclick="hapusSoal('+i+')">Hapus</button></div></div>'+
-  '<label>Soal pemantik</label><textarea oninput="S.soal['+i+'].teks=this.value">'+esc(q.teks)+'</textarea>'+
+  '<label>Soal pemantik</label><textarea oninput="S.soal['+i+'].teks=this.value;mv('+i+')">'+esc(q.teks)+'</textarea><div class="pv hide" id="mv'+i+'"></div>'+
   '<label>Kunci jawaban singkat (hanya untuk guru)</label><textarea style="min-height:50px" oninput="S.soal['+i+'].kunci=this.value">'+esc(q.kunci)+'</textarea>'+
-  '<label>Contoh kesalahan umum murid (opsional)</label><textarea style="min-height:50px" oninput="S.soal['+i+'].salah=this.value">'+esc(q.salah)+'</textarea></div>';
+  '<label>Contoh kesalahan umum murid (opsional, hanya tampil di Catatan untuk Guru)</label><textarea style="min-height:50px" oninput="S.soal['+i+'].salah=this.value">'+esc(q.salah)+'</textarea></div>';
  }).join('');
+ S.soal.forEach(function(q,i){mv(i);});
 }
+
+// ===== Rumus (KaTeX) =====
+var RAW={l:'',g:''},lastTA=null;
+var RM=[['Rumus $ $','$$'],['x²','^{}'],['pecahan','\\frac{}{}'],['√','\\sqrt{}'],['≤','\\leq '],['≥','\\geq '],['≠','\\neq '],['π','\\pi '],['±','\\pm ']];
+function mat(el){if(window.renderMathInElement)try{renderMathInElement(el,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false});}catch(e){}}
+function mv(i){var b=$('mv'+i);if(!b)return;var t=S.soal[i].teks;if(t.indexOf('$')<0){b.classList.add('hide');return;}b.classList.remove('hide');b.textContent=t;mat(b);}
+function sisip(k){var ta=lastTA;if(!ta){alert('Klik dulu kolom yang ingin diisi rumus.');return;}
+ var a=ta.selectionStart||0,b=ta.selectionEnd||0,t=RM[k][1];ta.value=ta.value.slice(0,a)+t+ta.value.slice(b);
+ var c=t.indexOf('{')>=0?t.indexOf('{')+1:(t==='$$'?1:t.length);ta.focus();ta.setSelectionRange(a+c,a+c);ta.dispatchEvent(new Event('input',{bubbles:true}));}
+document.addEventListener('focusin',function(e){var t=e.target;if(t&&t.closest&&t.closest('#editor')&&(t.tagName==='TEXTAREA'||t.tagName==='INPUT'))lastTA=t;});
 
 // ===== Editor eksplorasi =====
 function tambahLink(){S.links.push({label:'',url:'',catatan:''});renderEks();}
@@ -245,21 +275,20 @@ function susun(){
  '<p class="mot"><i>Salah di awal itu wajar. Kesalahan adalah bahan belajar yang paling berharga.</i></p>';
  // Tahap 1
  h+='<div class="st g"><h3><span class="no">1</span>Generate: coba dulu, tanpa takut salah</h3><p>'+ya+' jawaban awalmu untuk setiap soal. Jawaban belum sempurna pun tidak apa-apa.</p>'+
- S.soal.map(function(q,i){return '<div class="it"><b>'+(i+1)+'.</b> '+nl(q.teks)+'<div class="box"></div><div class="scale">Seberapa yakin kamu? &nbsp;<span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div></div>';}).join('')+'</div>';
+ S.soal.map(function(q,i){return '<div class="it"><span class="n">'+(i+1)+'</span><div><div class="sq">'+nl(q.teks)+'</div><div class="box"></div><div class="scale">Seberapa yakin kamu? &nbsp;<span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div></div></div>';}).join('')+'</div>';
  // Tahap 2
  var eks='';
  
- linksAktif().forEach(function(l){var u=l.url.trim();
-  eks+='<div class="qr"><img alt="QR Code '+esc(l.label)+'" src="'+qrUrl(u)+'"><b>'+esc(l.label||'Bahan eksplorasi')+'</b>'+(l.catatan?'<br>'+esc(l.catatan):'')+'<small>'+esc(u)+'</small></div>';});
+ var qs='';linksAktif().forEach(function(l){var u=l.url.trim();
+  qs+='<div class="qr"><img alt="QR Code '+esc(l.label)+'" src="'+qrUrl(u)+'"><b>'+esc(l.label||'Bahan eksplorasi')+'</b>'+(l.catatan?'<span>'+esc(l.catatan)+'</span>':'')+'<small>Tautan cadangan: '+esc(u)+'</small></div>';});if(qs)eks+='<div class="qrs">'+qs+'</div>';
  eks+='<div class="box cat"><b>'+(S.cara==='qr'?'Catatan poin pentingmu dari bahan eksplorasi:':'Simak penjelasan gurumu. Catat poin pentingnya:')+'</b></div>';
- var sal=S.soal.map(function(q,i){return q.salah.trim()?'<li>Soal '+(i+1)+': '+nl(q.salah)+'</li>':'';}).join('');
  h+='<div class="st e"><h3><span class="no">2</span>Explore: telusuri jawabanmu</h3>'+eks+
- '<div class="dua"><div><p><b>Pertanyaan penuntun:</b></p><ul><li>Bagian mana dari jawabanmu yang terasa janggal?</li><li>Apa bedanya jawabanmu dengan jawaban temanmu atau contoh yang ada?</li><li>Menurutmu, mengapa kesalahan itu bisa terjadi?</li></ul></div>'+(sal?'<div><p><b>Kesalahan yang sering muncul:</b></p><ul>'+sal+'</ul></div>':'')+'</div>'+
+ '<p><b>Pertanyaan penuntun:</b></p><ul><li>Bagian mana dari jawabanmu yang terasa janggal?</li><li>Apa bedanya jawabanmu dengan jawaban temanmu atau contoh yang ada?</li><li>Menurutmu, mengapa kesalahan itu bisa terjadi?</li></ul>'+
  '<table><tr><th style="width:10%">No. soal</th><th>Bagian yang benar</th><th>Bagian yang keliru</th><th>Mengapa keliru?</th></tr>'+
  S.soal.map(function(q,i){return '<tr><td>'+(i+1)+'</td><td></td><td></td><td></td></tr>';}).join('')+'</table></div>';
  // Tahap 3
  h+='<div class="st r"><h3><span class="no">3</span>Revise: perbaiki dan renungkan</h3><p>Tuliskan jawaban revisimu untuk setiap soal.</p>'+
- S.soal.map(function(q,i){return '<div class="it"><b>Soal '+(i+1)+'</b><div class="box"></div></div>';}).join('')+
+ S.soal.map(function(q,i){return '<div class="it"><span class="n">'+(i+1)+'</span><div><div class="sq"><b>Jawaban revisi</b></div><div class="box"></div></div></div>';}).join('')+
  '<p><b>Refleksi:</b></p><ul><li>Apa yang kamu pelajari dari kesalahan awalmu?</li><li>Bagaimana perasaanmu sekarang dibanding di awal?</li>'+
  (kel?'<li>Bagaimana kerja samamu dengan anggota kelompok? Apa yang bisa ditingkatkan?</li>':'')+'</ul><div class="box"></div>'+
  '<p><b>Penilaian diri</b> (beri tanda centang):<br>&#9744; Saya menemukan letak kesalahan saya<br>&#9744; Saya tahu penyebabnya<br>&#9744; Saya bisa memperbaikinya '+(kel?'bersama kelompok':'sendiri')+'<br>&#9744; Saya bisa menjelaskannya ke teman</p></div>';
@@ -276,14 +305,14 @@ function susun(){
   g+='<h3>Kerangka penjelasan</h3>'+(kr.length?'<ul>'+kr.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul>':'<p class="hint">Belum diisi.</p>')+
   '<p><b>Pertanyaan pancingan:</b> "Menurut kalian, apa yang terjadi kalau langkah ini diubah?" / "Siapa yang punya cara berbeda?" / "Di mana kira-kira letak kekeliruannya?"</p>';
  }
- $('lembar').innerHTML=h;$('guru').innerHTML=g;
+ $('lembar').innerHTML=h;$('guru').innerHTML=g;RAW={l:h,g:g};mat($('lembar'));mat($('guru'));
  $('editor').classList.add('hide');$('hasil').classList.remove('hide');window.scrollTo(0,0);
 }
 function kembali(){$('hasil').classList.add('hide');$('editor').classList.remove('hide');}
 function baru(){if(!confirm('Mulai perangkat baru? Pastikan draf sudah disimpan.'))return;S=baru0();isiForm();kembali();}
 
 // ===== Ekspor =====
-function teks(){var t=$('lembar').innerText+'\n\n'+$('guru').innerText;
+function teks(){var d=document.createElement('div');d.style.cssText='position:absolute;left:-9999px;width:800px';d.innerHTML=RAW.l+'<hr>'+RAW.g;document.body.appendChild(d);var t=d.innerText;document.body.removeChild(d);
  linksAktif().forEach(function(l){t+='\nTautan ('+(l.label||'bahan')+'): '+l.url.trim();});return t;}
 function salin(){var t=teks();
  if(navigator.clipboard)navigator.clipboard.writeText(t).then(function(){alert('Teks tersalin.');},function(){alert('Gagal menyalin. Coba unduh .txt.');});
@@ -291,7 +320,7 @@ function salin(){var t=teks();
 function simpan(isi,nama,tipe){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([isi],{type:tipe}));a.download=nama;a.click();setTimeout(function(){URL.revokeObjectURL(a.href);},1000);}
 function unduh(j){var n='SEGER-'+(S.meta.judul||'perangkat').replace(/[^\w]+/g,'-');
  if(j==='txt')simpan(teks(),n+'.txt','text/plain');
- else simpan('<html><head><meta charset="utf-8"><style>table{border-collapse:collapse}td,th{border:1px solid #666;padding:6px}.box{border:1px solid #666;height:70px}</style></head><body>'+$('lembar').innerHTML+$('guru').innerHTML+'</body></html>',n+'.doc','application/msword');}
+ else simpan('<html><head><meta charset="utf-8"><style>table{border-collapse:collapse}td,th{border:1px solid #666;padding:6px}.box{border:1px solid #666;height:70px}</style></head><body>'+RAW.l+RAW.g+'</body></html>',n+'.doc','application/msword');}
 function simpanDraf(){simpan(JSON.stringify(S,null,1),'draf-SEGER.json','application/json');}
 function muatDraf(el){var f=el.files[0];if(!f)return;var r=new FileReader();
  r.onload=function(){try{var d=JSON.parse(r.result);if(!d.meta||!Array.isArray(d.soal)||!d.soal.length)throw 0;
@@ -301,6 +330,7 @@ function muatDraf(el){var f=el.files[0];if(!f)return;var r=new FileReader();
  r.readAsText(f);el.value='';}
 function isiForm(){['judul','mapel','kelas','waktu','tujuan','mode'].forEach(function(k){$(k).value=S.meta[k]||'';});
  $('mode').value=S.meta.mode;$('cara').value=S.cara;renderSoal();renderEks();temaInfo();}
+$('rm').innerHTML='Rumus: '+RM.map(function(r,k){return '<button class="s" onmousedown="event.preventDefault()" onclick="sisip('+k+')">'+r[0]+'</button>';}).join(' ');
 isiForm();
 </script>
 </body>
