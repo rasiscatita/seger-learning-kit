@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEGER Learning Kit</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<style>
+:root{--ink:#1d2b3a;--mut:#5b6b7b;--bg:#f6f8fa;--line:#d9e0e7;--g:#1f7a6d;--gl:#e1f2ef;--e:#c9741a;--el:#fbeedc;--r:#5b4bb5;--rl:#e9e6f8;--pri:#17324d}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.55 "Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:var(--pri);color:#fff;padding:18px 20px}
+header h1{margin:0;font:700 1.5rem Georgia,serif}
+header p{margin:2px 0 0;opacity:.85;font-size:.9rem}
+.bar{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+.bar span{padding:3px 12px;border-radius:99px;font-size:.8rem;font-weight:600}
+.bar .g{background:var(--g)}.bar .e{background:var(--e)}.bar .r{background:var(--r)}
+main{max-width:860px;margin:0 auto;padding:18px}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:14px}
+h2{margin:0 0 10px;font:700 1.2rem Georgia,serif}
+label{display:block;font-weight:600;font-size:.88rem;margin:10px 0 3px}
+input,textarea,select{width:100%;padding:9px;border:1px solid var(--line);border-radius:6px;font:inherit;background:#fff}
+textarea{min-height:70px;resize:vertical}
+input:focus,textarea:focus,select:focus,button:focus-visible{outline:3px solid #7fb5e6;outline-offset:1px}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+button{font:inherit;font-weight:600;padding:9px 14px;border-radius:6px;border:1px solid var(--pri);background:#fff;color:var(--pri);cursor:pointer}
+button.p{background:var(--pri);color:#fff}
+button.s{padding:4px 9px;font-size:.82rem}
+button.d{border-color:#b3261e;color:#b3261e}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.err{color:#b3261e;font-size:.88rem;margin-top:6px;min-height:1.2em}
+.q{border-left:5px solid var(--g)}
+.qh{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.lk{background:var(--bg);border:1px dashed var(--line);border-radius:8px;padding:10px;margin-top:10px}
+.lk img{width:110px;height:110px;display:block;margin-top:8px;image-rendering:pixelated}
+.hint{font-size:.85rem;color:var(--mut)}
+.hide{display:none}
+/* Lembar hasil */
+.sheet h1{font:700 1.4rem Georgia,serif;margin:0}
+.meta{color:var(--mut);font-size:.9rem;margin-bottom:8px}
+.idn{display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;margin:10px 0}
+.idn div{border-bottom:1px solid #6b7886;min-height:26px;font-size:.9rem}
+.idn .w{grid-column:1/-1}
+.st{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:14px 0}
+.st h3{margin:0 0 6px;font-size:1.05rem}
+.st.g{background:var(--gl)}.st.g h3{color:var(--g)}
+.st.e{background:var(--el)}.st.e h3{color:var(--e)}
+.st.r{background:var(--rl)}.st.r h3{color:var(--r)}
+.it{margin:10px 0}
+.box{background:#fff;border:1px solid #9aa7b4;border-radius:4px;min-height:130px;margin:6px 0}
+.scale span{display:inline-block;width:26px;height:26px;line-height:24px;border:1px solid #9aa7b4;border-radius:50%;text-align:center;margin-right:4px;background:#fff;font-size:.85rem}
+table{width:100%;border-collapse:collapse;background:#fff}
+td,th{border:1px solid #9aa7b4;padding:6px;font-size:.88rem;text-align:left;vertical-align:top}
+td{height:125px}
+.qr{display:inline-block;text-align:center;margin:6px 12px 6px 0;vertical-align:top;max-width:190px}
+.qr img{width:3.2cm;height:3.2cm;image-rendering:pixelated;background:#fff}
+.qr small{display:block;word-break:break-all;font-size:.72rem}
+.guru{border:2px dashed var(--e);background:#fffaf2}
+.guru h2{color:var(--e)}
+.sheet p,.sheet li{text-wrap:pretty}.sheet h3,.meta{text-wrap:balance}
+.meta{text-align:center;font-weight:600}
+table{table-layout:fixed}
+.st{border-width:2px;padding:16px 18px}
+.st h3{display:flex;align-items:center;gap:10px;font-size:1.15rem}
+.no{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;color:#fff;font:700 1rem Georgia,serif;flex:none}
+.g .no{background:var(--g)}.e .no{background:var(--e)}.r .no{background:var(--r)}
+.dua{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:8px 0}
+@media(max-width:640px){.dua{grid-template-columns:1fr}}
+.cat{min-height:230px;padding:10px;margin:10px 0}
+.mot{text-align:center;background:#fff7e8;border:1px solid #f0d9b0;border-radius:8px;padding:8px 14px}
+.ban{position:relative;overflow:hidden;display:flex;align-items:center;gap:18px;justify-content:space-between;padding:22px 24px;border-radius:14px;color:#fff;margin-bottom:12px;background:linear-gradient(120deg,var(--pri),#1f5f8b 60%,var(--g))}
+.ban .sym i{position:absolute;font:italic 700 1.8rem Georgia,serif;opacity:.16}
+.ban .ik{font-size:3rem;flex:none;z-index:1}
+.ban .bt{flex:1;z-index:1;text-align:center}
+.ban small{letter-spacing:.18em;opacity:.85;font-size:.75rem}
+.ban h1{color:#fff;font:700 1.7rem Georgia,serif;text-wrap:balance}
+.ban .gr{width:110px;height:82px;flex:none;z-index:1}
+@media(max-width:560px){.ban .gr{display:none}}
+tr{break-inside:avoid}
+.box{background:repeating-linear-gradient(#fff 0 31px,#e3e8ed 31px 32px);min-height:128px}
+.cat{min-height:224px}
+.it{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start;margin:14px 0}
+.it .n{width:34px;height:34px;border-radius:50%;background:#fff;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;font:700 1rem Georgia,serif}
+.g .it .n{color:var(--g)}.r .it .n{color:var(--r)}
+.sq{font-weight:600;margin-bottom:2px}
+.scale{margin-top:8px}
+th{background:rgba(201,116,26,.15)}
+.qrs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:10px 0}
+.qr{display:block;max-width:none;margin:0;background:#fff;border:1px solid #9aa7b4;border-radius:10px;padding:12px;text-align:center}
+.qr img{display:block;margin:0 auto 8px}
+.qr b,.qr span,.qr small{display:block}
+.qr small{margin-top:4px;color:var(--mut)}
+@media print{.st.e{break-inside:auto}
+ header,.noprint,#editor{display:none!important}
+ body{background:#fff}main{max-width:none;padding:0}
+ .card{border:0;padding:0}
+ .st,.it{break-inside:avoid}.guru{break-before:page}
+ *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<header>
+ <h1>SEGER Learning Kit</h1>
+ <p>Strategi Generate-Explore-Revise: dari kesalahan awal, murid belajar.</p>
+ <div class="bar"><span class="g">1 Generate</span><span class="e">2 Explore</span><span class="r">3 Revise</span></div>
+</header>
+<main>
+<div id="editor">
+ <div class="card">
+  <h2>Identitas perangkat</h2>
+  <label for="judul">Judul materi (wajib)</label>
+  <input id="judul" placeholder="Contoh: Persamaan Kuadrat" oninput="S.meta.judul=this.value;temaInfo()"><div class="hint" id="tm"></div>
+  <div class="row">
+   <div><label for="mapel">Mata pelajaran</label><input id="mapel" oninput="S.meta.mapel=this.value"></div>
+   <div><label for="kelas">Kelas / fase</label><input id="kelas" placeholder="X / Fase E" oninput="S.meta.kelas=this.value"></div>
+   <div><label for="waktu">Alokasi waktu</label><input id="waktu" placeholder="2 x 45 menit" oninput="S.meta.waktu=this.value"></div>
+  </div>
+  <label for="tujuan">Tujuan pembelajaran (opsional)</label>
+  <textarea id="tujuan" oninput="S.meta.tujuan=this.value"></textarea>
+  <label for="mode">Mode pengerjaan</label>
+  <select id="mode" onchange="S.meta.mode=this.value">
+   <option value="individu">Individu (isian Nama dan Kelas)</option>
+   <option value="kelompok">Kelompok (isian Nama Anggota dan Kelas)</option>
+  </select>
+ </div>
+
+ <div class="card q">
+  <h2>Soal pemantik</h2>
+  <p class="hint">Semua soal dikerjakan bersama dalam satu alur Generate, Explore, Revise. Tulis rumus dengan teks biasa, misalnya x^2 - 5x + 6 = 0.</p>
+  <div id="soalList"></div>
+  <div class="acts"><button onclick="tambahSoal()">+ Tambah soal</button></div>
+ </div>
+
+ <div class="card" style="border-left:5px solid var(--e)">
+  <h2>Cara eksplorasi (tahap Explore)</h2>
+  <label for="cara">Pilih satu cara untuk seluruh soal</label>
+  <select id="cara" onchange="S.cara=this.value;renderEks()">
+   <option value="qr">Bahan digital (QR Code)</option>
+   <option value="guru">Dijelaskan guru di depan kelas</option>
+   <option value="gabungan">Gabungan (penjelasan guru, lalu QR Code)</option>
+  </select>
+  <div id="eks"></div>
+ </div>
+
+ <div class="err" id="err"></div>
+ <div class="acts">
+  <button class="p" onclick="susun()">Susun perangkat</button>
+  <button onclick="simpanDraf()">Simpan draf (.json)</button>
+  <button onclick="$('muat').click()">Muat draf</button>
+  <input type="file" id="muat" accept=".json" class="hide" onchange="muatDraf(this)">
+ </div>
+</div>
+
+<div id="hasil" class="hide">
+ <div class="acts noprint" style="margin:0 0 12px">
+  <button onclick="kembali()">&larr; Edit kembali</button>
+  <button class="p" onclick="window.print()">Cetak / simpan PDF</button>
+  <button onclick="salin()">Salin teks</button>
+  <button onclick="unduh('doc')">Unduh .doc</button>
+  <button onclick="unduh('txt')">Unduh .txt</button>
+  <button class="d" onclick="baru()">Perangkat baru</button>
+ </div>
+ <div class="card sheet" id="lembar"></div>
+ <div class="card guru" id="guru"></div>
+</div>
+</main>
+
+<script>
+// ===== Data sementara di memori =====
+var S = baru0();
+function baru0(){return {meta:{judul:'',mapel:'Matematika',kelas:'',waktu:'',tujuan:'',mode:'individu'},
+ soal:[{teks:'',kunci:'',salah:''}], cara:'qr', links:[{label:'',url:'',catatan:''}], kerangka:''};}
+var CARA={qr:'Bahan digital (QR Code)',guru:'Dijelaskan guru di depan kelas',gabungan:'Gabungan (penjelasan guru + QR Code)'};
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s||'').replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]});}
+function nl(s){return esc(s).replace(/\n/g,'<br>');}
+function urlOk(u){return /^https?:\/\/\S+\.\S+/i.test(u);}
+function qrUrl(u){try{var q=qrcode(0,'M');q.addData(u);q.make();return q.createDataURL(8,4);}catch(e){return '';}}
+
+// ===== Editor soal =====
+function tambahSoal(){S.soal.push({teks:'',kunci:'',salah:''});renderSoal();}
+function hapusSoal(i){if(S.soal.length<2){alert('Minimal harus ada satu soal.');return;}if(confirm('Hapus soal ini?')){S.soal.splice(i,1);renderSoal();}}
+function pindah(i,d){var j=i+d;if(j<0||j>=S.soal.length)return;var t=S.soal[i];S.soal[i]=S.soal[j];S.soal[j]=t;renderSoal();}
+function renderSoal(){
+ $('soalList').innerHTML=S.soal.map(function(q,i){
+  return '<div class="lk"><div class="qh"><b>Soal '+(i+1)+'</b><div>'+
+  '<button class="s" onclick="pindah('+i+',-1)" aria-label="Naik">&uarr;</button> '+
+  '<button class="s" onclick="pindah('+i+',1)" aria-label="Turun">&darr;</button> '+
+  '<button class="s d" onclick="hapusSoal('+i+')">Hapus</button></div></div>'+
+  '<label>Soal pemantik</label><textarea oninput="S.soal['+i+'].teks=this.value">'+esc(q.teks)+'</textarea>'+
+  '<label>Kunci jawaban singkat (hanya untuk guru)</label><textarea style="min-height:50px" oninput="S.soal['+i+'].kunci=this.value">'+esc(q.kunci)+'</textarea>'+
+  '<label>Contoh kesalahan umum murid (opsional, hanya tampil di Catatan untuk Guru)</label><textarea style="min-height:50px" oninput="S.soal['+i+'].salah=this.value">'+esc(q.salah)+'</textarea></div>';
+ }).join('');
+}
+
+// ===== Editor eksplorasi =====
+function tambahLink(){S.links.push({label:'',url:'',catatan:''});renderEks();}
+function hapusLink(k){S.links.splice(k,1);renderEks();}
+function setUrl(k,el){
+ S.links[k].url=el.value;var v=el.value.trim(),b=$('pv'+k);
+ if(!v){b.innerHTML='';return;}
+ b.innerHTML=urlOk(v)?'<img alt="Pratinjau QR" src="'+qrUrl(v)+'">':'<span class="err">Tautan harus diawali http:// atau https://</span>';
+}
+function unduhQR(k){var u=S.links[k].url.trim();if(!urlOk(u))return;
+ var a=document.createElement('a');a.href=qrUrl(u);a.download='QR-'+(S.links[k].label||'bahan').replace(/[^\w]+/g,'-')+'.png';a.click();}
+function renderEks(){
+ var h='';
+ if(S.cara!=='qr')h+='<label>Kerangka penjelasan guru (hanya muncul di Catatan untuk Guru; satu poin per baris)</label><textarea oninput="S.kerangka=this.value">'+esc(S.kerangka)+'</textarea>';
+ if(S.cara!=='guru'){
+  h+=S.links.map(function(l,k){
+   var pv=urlOk(l.url.trim())?'<img alt="Pratinjau QR" src="'+qrUrl(l.url.trim())+'">':(l.url?'<span class="err">Tautan harus diawali http:// atau https://</span>':'');
+   return '<div class="lk"><label>Label tautan</label><input value="'+esc(l.label)+'" placeholder="Simulasi grafik parabola" oninput="S.links['+k+'].label=this.value">'+
+   '<label>Tautan (URL)</label><input value="'+esc(l.url)+'" placeholder="https://..." oninput="setUrl('+k+',this)">'+
+   '<label>Petunjuk untuk murid (opsional)</label><input value="'+esc(l.catatan)+'" oninput="S.links['+k+'].catatan=this.value">'+
+   '<div id="pv'+k+'">'+pv+'</div><div class="acts"><button class="s" onclick="unduhQR('+k+')">Unduh QR (PNG)</button>'+
+   (S.links.length>1?'<button class="s d" onclick="hapusLink('+k+')">Hapus tautan</button>':'')+'</div></div>';
+  }).join('')+'<div class="acts"><button class="s" onclick="tambahLink()">+ Tambah tautan</button></div>';
+ }
+ $('eks').innerHTML=h;
+}
+
+// ===== Tema tampilan mengikuti judul materi =====
+var TEMA=[
+ [/kuadrat|parabola|fungsi/i,'Grafik fungsi','📈',['x²','f(x)','y','Δ'],'<path d="M14 72Q60-34 106 72"/>'],
+ [/trigonometri|sinus|cosinus|sudut/i,'Trigonometri','📐',['sin','cos','tan','θ'],'<path d="M8 45C26-5 38-5 56 45S88 95 112 45"/>'],
+ [/statistik|data|peluang|probabilitas/i,'Statistika dan peluang','📊',['x̄','σ','n','%'],'<path d="M22 78V50M46 78V28M70 78V40M94 78V16" stroke-width="9"/>'],
+ [/geometri|bangun|lingkaran|segitiga|luas|volume|bidang/i,'Geometri','🔷',['π','∠','△','r²'],'<circle cx="42" cy="48" r="26"/><path d="M62 78L90 24L112 78Z"/>'],
+ [/logaritma|eksponen|pangkat|akar/i,'Eksponen dan logaritma','🔢',['log','eⁿ','√','xⁿ'],'<path d="M12 78Q70 74 108 10"/>'],
+ [/barisan|deret|pola/i,'Barisan dan deret','🧩',['Uₙ','Sₙ','a','b'],'<circle cx="20" cy="70" r="5"/><circle cx="46" cy="58" r="5"/><circle cx="72" cy="40" r="5"/><circle cx="98" cy="16" r="5"/>'],
+ [/matriks|vektor|transformasi/i,'Matriks dan vektor','🧮',['[ ]','→','det','A⁻¹'],'<path d="M20 20H100M20 50H100M20 78H100M30 12V80M60 12V80M90 12V80" stroke-width="2"/>'],
+ [/limit|turunan|integral|diferensial/i,'Kalkulus','♾️',['lim','dx','∫','∞'],'<path d="M10 76Q60 80 108 12"/><path d="M40 62L100 36" stroke-dasharray="6 5"/>']
+];
+function tema(j){for(var i=0;i<TEMA.length;i++)if(TEMA[i][0].test(j||''))return {n:TEMA[i][1],e:TEMA[i][2],s:TEMA[i][3],v:TEMA[i][4]};
+ return {n:'Umum',e:'🧮',s:['π','∑','√','∞'],v:'<path d="M8 50C28 10 48 10 60 45S92 80 112 40"/>'};}
+function temaInfo(){var t=tema(S.meta.judul);$('tm').textContent='Tema tampilan: '+t.e+' '+t.n;}
+function banner(m){var t=tema(m.judul);
+ return '<div class="ban"><div class="sym">'+t.s.map(function(x,i){return '<i style="left:'+(8+i*23)+'%;top:'+(i%2?58:6)+'%">'+esc(x)+'</i>';}).join('')+'</div>'+
+ '<div class="ik">'+t.e+'</div><div class="bt"><small>LEMBAR KERJA SEGER</small><h1>'+esc(m.judul)+'</h1></div>'+
+ '<svg class="gr" viewBox="0 0 120 90" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" aria-hidden="true">'+t.v+'<path d="M8 84H114M8 84V6" stroke-opacity=".5" stroke-width="1.5"/></svg></div>';}
+
+// ===== Validasi dan penyusunan =====
+function linksAktif(){return S.cara==='guru'?[]:S.links.filter(function(l){return urlOk(l.url.trim());});}
+function validasi(){
+ if(!S.meta.judul.trim())return 'Judul materi wajib diisi.';
+ for(var i=0;i<S.soal.length;i++)if(!S.soal[i].teks.trim())return 'Soal '+(i+1)+' masih kosong.';
+ if(S.cara!=='guru')for(var k=0;k<S.links.length;k++){var u=S.links[k].url.trim();if(u&&!urlOk(u))return 'Tautan harus diawali http:// atau https://';}
+ return '';
+}
+function susun(){
+ var e=validasi();$('err').textContent=e;if(e)return;
+ var m=S.meta,kel=m.mode==='kelompok',n=S.soal.length;
+ var idn=kel?'<div class="idn"><div class="w">Nama kelompok (jika ada): </div><div>Anggota 1: </div><div>Anggota 4: </div><div>Anggota 2: </div><div>Anggota 5: </div><div>Anggota 3: </div><div>Kelas: </div></div>'
+  :'<div class="idn"><div>Nama: </div><div>Kelas: </div></div>';
+ var ya=kel?'Diskusikan bersama kelompokmu, lalu tuliskan':'Coba kerjakan sendiri dulu, lalu tuliskan';
+ var h=banner(m)+'<div class="meta">'+[m.mapel,m.kelas&&'Kelas '+m.kelas,m.waktu,kel?'Kelompok':'Individu'].filter(Boolean).map(esc).join(' | ')+'</div>'+idn+
+ (m.tujuan?'<p><b>Tujuan pembelajaran:</b> '+nl(m.tujuan)+'</p>':'')+
+ '<p class="mot"><i>Salah di awal itu wajar. Kesalahan adalah bahan belajar yang paling berharga.</i></p>';
+ // Tahap 1
+ h+='<div class="st g"><h3><span class="no">1</span>Generate: coba dulu, tanpa takut salah</h3><p>'+ya+' jawaban awalmu untuk setiap soal. Jawaban belum sempurna pun tidak apa-apa.</p>'+
+ S.soal.map(function(q,i){return '<div class="it"><span class="n">'+(i+1)+'</span><div><div class="sq">'+nl(q.teks)+'</div><div class="box"></div><div class="scale">Seberapa yakin kamu? &nbsp;<span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div></div></div>';}).join('')+'</div>';
+ // Tahap 2
+ var eks='';
+ 
+ var qs='';linksAktif().forEach(function(l){var u=l.url.trim();
+  qs+='<div class="qr"><img alt="QR Code '+esc(l.label)+'" src="'+qrUrl(u)+'"><b>'+esc(l.label||'Bahan eksplorasi')+'</b>'+(l.catatan?'<span>'+esc(l.catatan)+'</span>':'')+'<small>Tautan cadangan: '+esc(u)+'</small></div>';});if(qs)eks+='<div class="qrs">'+qs+'</div>';
+ eks+='<div class="box cat"><b>'+(S.cara==='qr'?'Catatan poin pentingmu dari bahan eksplorasi:':'Simak penjelasan gurumu. Catat poin pentingnya:')+'</b></div>';
+ h+='<div class="st e"><h3><span class="no">2</span>Explore: telusuri jawabanmu</h3>'+eks+
+ '<p><b>Pertanyaan penuntun:</b></p><ul><li>Bagian mana dari jawabanmu yang terasa janggal?</li><li>Apa bedanya jawabanmu dengan jawaban temanmu atau contoh yang ada?</li><li>Menurutmu, mengapa kesalahan itu bisa terjadi?</li></ul>'+
+ '<table><tr><th style="width:10%">No. soal</th><th>Bagian yang benar</th><th>Bagian yang keliru</th><th>Mengapa keliru?</th></tr>'+
+ S.soal.map(function(q,i){return '<tr><td>'+(i+1)+'</td><td></td><td></td><td></td></tr>';}).join('')+'</table></div>';
+ // Tahap 3
+ h+='<div class="st r"><h3><span class="no">3</span>Revise: perbaiki dan renungkan</h3><p>Tuliskan jawaban revisimu untuk setiap soal.</p>'+
+ S.soal.map(function(q,i){return '<div class="it"><span class="n">'+(i+1)+'</span><div><div class="sq"><b>Jawaban revisi</b></div><div class="box"></div></div></div>';}).join('')+
+ '<p><b>Refleksi:</b></p><ul><li>Apa yang kamu pelajari dari kesalahan awalmu?</li><li>Bagaimana perasaanmu sekarang dibanding di awal?</li>'+
+ (kel?'<li>Bagaimana kerja samamu dengan anggota kelompok? Apa yang bisa ditingkatkan?</li>':'')+'</ul><div class="box"></div>'+
+ '<p><b>Penilaian diri</b> (beri tanda centang):<br>&#9744; Saya menemukan letak kesalahan saya<br>&#9744; Saya tahu penyebabnya<br>&#9744; Saya bisa memperbaikinya '+(kel?'bersama kelompok':'sendiri')+'<br>&#9744; Saya bisa menjelaskannya ke teman</p></div>';
+ // Catatan guru
+ var g='<h2>Catatan untuk Guru</h2><p><b>Tips umum:</b> Terima setiap jawaban awal dengan netral. Tanyakan "bagaimana kamu sampai di sini?" sebelum menilai benar atau salah. Beri apresiasi pada keberanian mencoba dan pada kesalahan yang berhasil ditemukan sendiri oleh murid.</p>'+
+ '<p><b>Generate:</b> Tegaskan bahwa tahap ini tidak dinilai. Minta murid mengisi tingkat keyakinan dengan jujur, karena hasilnya berguna untuk refleksi.</p>'+
+ '<p><b>Explore ('+CARA[S.cara]+'):</b> Dampingi murid menemukan sendiri bagian yang keliru. Hindari langsung memberi jawaban benar.</p>'+
+ '<p><b>Revise:</b> Ajak murid membandingkan jawaban awal dan revisi, lalu menyebutkan apa yang berubah dan mengapa.</p>'+
+ '<p><b>Merespons jawaban salah:</b> Katakan "Terima kasih, jawaban ini membantu kita melihat cara berpikirmu", lalu ajak murid menelusuri sendiri.</p>'+
+ (kel?'<p><b>Kerja kelompok:</b> Bagi peran (pembaca soal, pencatat, penyaji, pemantau waktu) dan bergilir tiap soal. Pastikan setiap anggota ikut berpendapat.</p>':'')+
+ '<h3>Kunci jawaban dan miskonsepsi</h3><ol>'+S.soal.map(function(q){return '<li>'+(q.kunci?'<b>Kunci:</b> '+nl(q.kunci):'<i>Kunci belum diisi.</i>')+(q.salah?'<br><b>Miskonsepsi:</b> '+nl(q.salah):'')+'</li>';}).join('')+'</ol>';
+ if(S.cara!=='qr'){
+  var kr=S.kerangka.split('\n').filter(function(x){return x.trim();});
+  g+='<h3>Kerangka penjelasan</h3>'+(kr.length?'<ul>'+kr.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul>':'<p class="hint">Belum diisi.</p>')+
+  '<p><b>Pertanyaan pancingan:</b> "Menurut kalian, apa yang terjadi kalau langkah ini diubah?" / "Siapa yang punya cara berbeda?" / "Di mana kira-kira letak kekeliruannya?"</p>';
+ }
+ $('lembar').innerHTML=h;$('guru').innerHTML=g;
+ $('editor').classList.add('hide');$('hasil').classList.remove('hide');window.scrollTo(0,0);
+}
+function kembali(){$('hasil').classList.add('hide');$('editor').classList.remove('hide');}
+function baru(){if(!confirm('Mulai perangkat baru? Pastikan draf sudah disimpan.'))return;S=baru0();isiForm();kembali();}
+
+// ===== Ekspor =====
+function teks(){var t=$('lembar').innerText+'\n\n'+$('guru').innerText;
+ linksAktif().forEach(function(l){t+='\nTautan ('+(l.label||'bahan')+'): '+l.url.trim();});return t;}
+function salin(){var t=teks();
+ if(navigator.clipboard)navigator.clipboard.writeText(t).then(function(){alert('Teks tersalin.');},function(){alert('Gagal menyalin. Coba unduh .txt.');});
+ else alert('Browser tidak mendukung salin otomatis. Coba unduh .txt.');}
+function simpan(isi,nama,tipe){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([isi],{type:tipe}));a.download=nama;a.click();setTimeout(function(){URL.revokeObjectURL(a.href);},1000);}
+function unduh(j){var n='SEGER-'+(S.meta.judul||'perangkat').replace(/[^\w]+/g,'-');
+ if(j==='txt')simpan(teks(),n+'.txt','text/plain');
+ else simpan('<html><head><meta charset="utf-8"><style>table{border-collapse:collapse}td,th{border:1px solid #666;padding:6px}.box{border:1px solid #666;height:70px}</style></head><body>'+$('lembar').innerHTML+$('guru').innerHTML+'</body></html>',n+'.doc','application/msword');}
+function simpanDraf(){simpan(JSON.stringify(S,null,1),'draf-SEGER.json','application/json');}
+function muatDraf(el){var f=el.files[0];if(!f)return;var r=new FileReader();
+ r.onload=function(){try{var d=JSON.parse(r.result);if(!d.meta||!Array.isArray(d.soal)||!d.soal.length)throw 0;
+  var b=baru0();d.meta=Object.assign(b.meta,d.meta);d.cara=CARA[d.cara]?d.cara:'qr';
+  d.links=(d.links&&d.links.length)?d.links:b.links;d.kerangka=d.kerangka||'';S=d;isiForm();$('err').textContent='Draf berhasil dimuat.';}
+  catch(e){$('err').textContent='File draf tidak valid.';}};
+ r.readAsText(f);el.value='';}
+function isiForm(){['judul','mapel','kelas','waktu','tujuan','mode'].forEach(function(k){$(k).value=S.meta[k]||'';});
+ $('mode').value=S.meta.mode;$('cara').value=S.cara;renderSoal();renderEks();temaInfo();}
+isiForm();
+</script>
+</body>
+</html>
